@@ -9,4 +9,5 @@ public interface ISetting
 {
 	public void load(String path);
 	public String getProperty(String propertyName);
+	public void test();
 }
