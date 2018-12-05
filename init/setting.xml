@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <init>
-	<config>
-		<class>com.crscic.gata.config.PropertyImpl</class>
-	</config>
+	<IConfig>
+		<class>com.crscic.gate.config.PropertyImpl</class>
+	</IConfig>
 </init>
