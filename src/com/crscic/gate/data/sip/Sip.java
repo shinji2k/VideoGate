@@ -149,6 +149,10 @@ public class Sip
 		{
 			throw new DataGenerateException(ERR_MSG + "创建地址信息失败", e);
 		}
+		catch (ParseException e)
+		{
+			e.printStackTrace();
+		}
 		return request;
 	}
 
