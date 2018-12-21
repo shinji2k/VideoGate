@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <init>
 	<IConfig>
-		<class>com.crscic.gate.config.PropertyImpl</class>
+		<class>com.crscic.gate.config.PropertyConfigImpl</class>
+		<path>./config/config.properties</path>
 	</IConfig>
+	
+	<IConnector>
+		<Connector>
+			<name>tcp</name>
+			<class></class>
+		</Connector>
+		<Connector>
+			<name>udp</name>
+			<class>com.crscic.gate.connector.SipConnectorImpl</class>
+		</Connector>
+	</IConnector>
+	
+	<IService>
+		<Interface>
+			<name>28181</name>
+			<class>com.crscic.gate.service.Service28181Impl</class>
+		</Interface>
+		
+		<Interface>
+			<name>hcvms</name>
+			<class>com.crscic.gate.service.ServiceHcvmsImpl</class>
+		</Interface>
+	</IService>
 </init>

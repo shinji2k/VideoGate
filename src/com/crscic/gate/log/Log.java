@@ -75,4 +75,14 @@ public class Log
 		getLogger().warn(log);
 	}
 
+	/**
+	 * @param e
+	 * @author zhaokai
+	 * @create 2018年12月21日 下午5:28:57
+	 */
+	public static void error(Exception e)
+	{
+		getLogger().error("", e);
+	}
+
 }

@@ -1,5 +1,9 @@
 package com.crscic.gate.config;
 
+import java.io.IOException;
+
+import com.crscic.gate.utils.XmlHelper;
+
 /**
  * 
  * @author zhaokai
@@ -7,7 +11,7 @@ package com.crscic.gate.config;
  */
 public interface IConfig
 {
-	public void load(String path);
+	public void init(XmlHelper xml) throws IOException;
 	public String getProperty(String propertyName);
 	
 }

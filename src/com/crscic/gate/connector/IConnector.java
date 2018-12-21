@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import com.crscic.gate.exception.ConnectException;
+
 /**
  * 
  * @author zhaokai
@@ -32,7 +34,7 @@ public interface IConnector
 	 * zhaokai
 	 * 2017年9月10日 下午1:58:03
 	 */
-	public void openConnect();
+	public void openConnect() throws ConnectException;
 	
 	public boolean isOpen();
 	
