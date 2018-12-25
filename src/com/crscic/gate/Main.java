@@ -30,7 +30,7 @@ public class Main
 			IService senderService = factory.getService(config.getProperty("sender"));
 			IService receiverService = factory.getService(config.getProperty("receiver"));
 			
-			IService.addSendListener(new SendListener(receiverService));
+//			IService.addSendListener(new SendListener(receiverService));
 			
 			senderService.startService(config, senderConnector, recvConnector);
 		}

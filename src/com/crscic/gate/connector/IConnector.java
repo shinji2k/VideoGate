@@ -24,7 +24,7 @@ public interface IConnector
 	 * @throws UnknownHostException 
 	 * @throws IOException 
 	 */
-	public void send(byte[] data);
+	public void send(Object data) throws ConnectException;
 	public List<Byte> receive();
 	
 	/**

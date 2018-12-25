@@ -2,15 +2,11 @@ package com.crscic.gate.data.sip;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Properties;
-
 import javax.sip.InvalidArgumentException;
 import javax.sip.ListeningPoint;
-import javax.sip.ObjectInUseException;
 import javax.sip.PeerUnavailableException;
 import javax.sip.SipFactory;
 import javax.sip.SipProvider;
-import javax.sip.TransportNotSupportedException;
 import javax.sip.address.Address;
 import javax.sip.address.AddressFactory;
 import javax.sip.address.SipURI;
@@ -31,6 +27,7 @@ import com.crscic.gate.config.IConfig;
 import com.crscic.gate.connector.IConnector;
 import com.crscic.gate.connector.SipConnectorImpl;
 import com.crscic.gate.exception.DataGenerateException;
+import com.crscic.gate.utils.StringUtils;
 
 /**
  * 
@@ -39,12 +36,12 @@ import com.crscic.gate.exception.DataGenerateException;
 public class Sip
 {
 	private static final String ERR_MSG = "生成Sip协议报文头信息-";
-	
+
 	private SipConnectorImpl connector;
-	private SipProvider sipProvider;
-	private AddressFactory addressFactory;
-	private MessageFactory messageFactory;
-	private HeaderFactory headerFactory;
+	private static SipProvider sipProvider;
+	private static AddressFactory addressFactory;
+	private static MessageFactory messageFactory;
+	private static HeaderFactory headerFactory;
 	private ContactHeader contactHeader;
 	private ListeningPoint listeningPoint;
 	private long invco = 1;
@@ -145,19 +142,19 @@ public class Sip
 			request.addHeader(contactHeader);
 
 		}
-		catch (DataGenerateException e)
+		catch (InvalidArgumentException e)
 		{
-			throw new DataGenerateException(ERR_MSG + "创建地址信息失败", e);
+			throw new DataGenerateException(ERR_MSG + "创建Via信息失败", e);
 		}
 		catch (ParseException e)
 		{
-			e.printStackTrace();
+			throw new DataGenerateException(ERR_MSG + "创建地址信息失败", e);
 		}
 		return request;
 	}
 
 	public Request createInvite(String toIp, String toPort, String toUser, String toSipAddress, String toDisplayName,
-			String fromIp, String fromPort, String fromName, String fromSipAddress, String fromDisplayName,
+			String fromIp, String fromPort, String fromName, String fromSipAddress, String fromDisplayName, String tag,
 			String callId, String transportType, String viaHostIp, String viaHostPort)
 			throws ParseException, InvalidArgumentException
 	{
@@ -176,7 +173,9 @@ public class Sip
 
 		Address fromNameAddress = addressFactory.createAddress(fromAddress);
 		fromNameAddress.setDisplayName(fromDisplayName);
-		FromHeader fromHeader = headerFactory.createFromHeader(fromNameAddress, "12345");
+		if (StringUtils.isNullOrEmpty(tag))
+			tag = Long.toString(System.currentTimeMillis());
+		FromHeader fromHeader = headerFactory.createFromHeader(fromNameAddress, tag);
 
 		// create To Header
 		SipURI toAddress = addressFactory.createSipURI(toUser, toSipAddress);
@@ -243,5 +242,35 @@ public class Sip
 		request.addHeader(callInfoHeader);
 
 		return request;
+	}
+
+	public static AddressFactory getAddressFactory()
+	{
+		return addressFactory;
+	}
+
+	public static void setAddressFactory(AddressFactory addressFactory)
+	{
+		Sip.addressFactory = addressFactory;
+	}
+
+	public static MessageFactory getMessageFactory()
+	{
+		return messageFactory;
+	}
+
+	public static void setMessageFactory(MessageFactory messageFactory)
+	{
+		Sip.messageFactory = messageFactory;
+	}
+
+	public static HeaderFactory getHeaderFactory()
+	{
+		return headerFactory;
+	}
+
+	public static void setHeaderFactory(HeaderFactory headerFactory)
+	{
+		Sip.headerFactory = headerFactory;
 	}
 }
