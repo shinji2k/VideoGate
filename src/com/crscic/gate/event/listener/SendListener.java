@@ -34,10 +34,12 @@ import gov.nist.javax.sip.clientauthutils.AuthenticationHelper;
 public class SendListener implements EventListener, SipListener
 {
 	private SipConnectorImpl connector;
+	private Sip sip;
 
-	public SendListener(IConnector connector)
+	public SendListener(IConnector connector, Sip sip)
 	{
 		this.connector = (SipConnectorImpl) connector;
+		this.sip = sip;
 	}
 
 	public void send(Event e)
@@ -108,18 +110,20 @@ public class SendListener implements EventListener, SipListener
 		CSeqHeader cseq = (CSeqHeader) response.getHeader(CSeqHeader.NAME);
 
 		System.out.println("Response received : Status Code = " + response.getStatusCode() + " " + cseq);
+		
+		
 		if (tid == null)
 		{
 			System.out.println("Stray response -- dropping ");
 			return;
 		}
+		Dialog dialog = responseReceivedEvent.getDialog();
 		System.out.println("transaction state is " + tid.getState());
-		System.out.println("Dialog = " + tid.getDialog());
-		System.out.println("Dialog State is " + tid.getDialog().getState());
+		System.out.println("Dialog = " + dialog);
+		System.out.println("Dialog State is " + dialog.getState());
 		System.out.println("1");
 		try
 		{
-			Dialog dialog = tid.getDialog();
 			if (response.getStatusCode() == Response.OK)
 			{
 				if (cseq.getMethod().equals(Request.INVITE))
@@ -136,7 +140,7 @@ public class SendListener implements EventListener, SipListener
 						// dialog.
 						System.out.println("Sending BYE -- cancel went in too late !!");
 						Request byeRequest = dialog.createRequest(Request.BYE);
-						ClientTransaction ct = connector.getSipProvider().getNewClientTransaction(byeRequest);
+						ClientTransaction ct = connector.getSipProvider().getNewClientTransaction(byeRequest);//TODO:sipProvider here
 						dialog.sendRequest(ct);
 					}
 				}
@@ -144,10 +148,10 @@ public class SendListener implements EventListener, SipListener
 			else if (response.getStatusCode() == Response.PROXY_AUTHENTICATION_REQUIRED
 					|| response.getStatusCode() == Response.UNAUTHORIZED)
 			{
-				AuthenticationHelper authenticationHelper = ((SipStackExt) connector.getSipStack())
-						.getAuthenticationHelper(new AccountManagerImpl(), Sip.getHeaderFactory());
+				AuthenticationHelper authenticationHelper = ((SipStackExt) connector.getSipStack())	//TODO:sipStack Here
+						.getAuthenticationHelper(new AccountManagerImpl(), Sip.getHeaderFactory());	//TODO: headerFactory here
 
-				tid = authenticationHelper.handleChallenge(response, tid, connector.getSipProvider(), 5);
+				tid = authenticationHelper.handleChallenge(response, tid, connector.getSipProvider(), 5);	//TODO:sipProvider here
 				System.out.println("new Request:" + tid.getRequest());
 				tid.sendRequest();
 //TODO:
